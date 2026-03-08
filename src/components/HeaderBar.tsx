@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Globe, Volume2, VolumeX } from 'lucide-react';
+import { Globe, VolumeX, LogOut } from 'lucide-react';
 import { Language, t } from '@/lib/translations';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '@/hooks/useAuth';
 
 interface HeaderBarProps {
   lang: Language;
@@ -11,6 +12,8 @@ interface HeaderBarProps {
 }
 
 export function HeaderBar({ lang, setLang, isSpeaking, onStopSpeaking }: HeaderBarProps) {
+  const { signOut } = useAuth();
+
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -51,6 +54,14 @@ export function HeaderBar({ lang, setLang, isSpeaking, onStopSpeaking }: HeaderB
               </SelectContent>
             </Select>
           </div>
+
+          <button
+            onClick={signOut}
+            className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </motion.header>
