@@ -90,7 +90,7 @@ const Index = () => {
 
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
         <p className="font-display">AgriVision AI — Smart Farm Advisory & Decision Intelligence System</p>
-        <p className="mt-1">Powered by Multi-Agent AI Architecture</p>
+        <p className="mt-1">Powered by Multi-Agent AI Architecture • College Project</p>
       </footer>
     </div>
   );
