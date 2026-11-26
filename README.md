@@ -1,73 +1,198 @@
-# Welcome to your Lovable project
+# 🌱 AGENTIC AI POWERED FARM ADVISOR SYSTEM
 
-## Project info
+An AI-powered multi-agent crop recommendation system that analyzes soil, water, weather & pest data to deliver precision farming advice.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## 📋 Prerequisites
 
-There are several ways of editing your application.
+Before you begin, make sure you have the following installed on your computer:
 
-**Use Lovable**
+### 1. Install Node.js
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Node.js is required to run this project.
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Go to **https://nodejs.org/**
+2. Download the **LTS** (Long Term Support) version (recommended)
+3. Run the installer — click **Next** through all steps and finish
+4. Verify the installation by opening **Command Prompt** or **PowerShell** and typing:
+   ```
+   node --version
+   npm --version
+   ```
+   You should see version numbers like `v20.x.x` and `10.x.x`
 
-**Use your preferred IDE**
+### 2. Install VS Code
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Go to **https://code.visualstudio.com/**
+2. Download and install VS Code
+3. Open VS Code
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🚀 Step-by-Step: Running the Project
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Step 1: Open the Project in VS Code
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Open **VS Code**
+2. Click **File** → **Open Folder...**
+3. Navigate to the project folder: `agriwise-ai-main`
+4. Click **Select Folder**
 
-# Step 3: Install the necessary dependencies.
-npm i
+You should now see all the project files in the left sidebar (Explorer panel).
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Step 2: Open the Terminal in VS Code
+
+1. Click **Terminal** → **New Terminal** from the top menu bar
+   - Or press **Ctrl + `** (backtick key, above Tab)
+2. A terminal panel will appear at the bottom of VS Code
+
+### Step 3: Install Dependencies
+
+In the terminal, type this command and press **Enter**:
+
+```bash
+npm install
+```
+
+⏳ **Wait** — this will take 1-2 minutes. It downloads all the libraries the project needs. You'll see a progress bar and some text scrolling.
+
+When it finishes, you should see something like:
+```
+added XXX packages in XXs
+```
+
+### Step 4: Start the Project
+
+In the same terminal, type this command and press **Enter**:
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+✅ After a few seconds, you'll see:
+```
+VITE v5.x.x  ready in XXX ms
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+  ➜  Local:   http://localhost:8080/
+```
 
-**Use GitHub Codespaces**
+### Step 5: Open in Browser
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Hold **Ctrl** and click on **http://localhost:8080/** in the terminal
+   - Or open your browser (Chrome/Edge) and go to `http://localhost:8080/`
+2. 🎉 **The app is running!**
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🔐 How to Use the App
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Creating an Account (Sign Up)
 
-## How can I deploy this project?
+1. You'll see the login page with **"AGENTIC AI POWERED FARM ADVISOR SYSTEM"**
+2. Click the **Sign Up** tab
+3. Enter your:
+   - **Full Name** (e.g., "John Doe")
+   - **Email** (e.g., "john@example.com")
+   - **Password** (minimum 6 characters)
+4. Click **Create Account**
+5. ✅ You're **instantly logged in** — no email verification needed!
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Signing In
 
-## Can I connect a custom domain to my Lovable project?
+1. On the auth page, make sure the **Sign In** tab is selected
+2. Enter the **same email and password** you used during signup
+3. Click **Sign In**
 
-Yes, you can!
+### Using the Farm Advisor
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. After logging in, you'll see the main dashboard
+2. Click **Get Started** to scroll to the input form
+3. Fill in your farm details:
+   - **State** — select your state
+   - **Location/District** — enter your district
+   - **Soil Type** — select from dropdown
+   - **Water Source** — select from dropdown
+   - **Season** — select current season
+   - **Farm Area** — enter in acres
+4. Click **Analyze & Recommend**
+5. Wait for the AI agents to process (about 3 seconds)
+6. View your personalized crop recommendations!
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Downloading the Report
+
+After analysis, scroll down and click **Download Advisory Report** to save an HTML report of the recommendations.
+
+---
+
+## 🛑 How to Stop the Project
+
+In the VS Code terminal, press **Ctrl + C** to stop the development server.
+
+---
+
+## 🔄 How to Restart the Project
+
+If you've stopped the project and want to run it again:
+
+1. Open VS Code with the project folder
+2. Open the terminal (**Ctrl + `**)
+3. Run:
+   ```bash
+   npm run dev
+   ```
+   (No need to run `npm install` again unless you've deleted the `node_modules` folder)
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology     | Purpose                          |
+|----------------|----------------------------------|
+| React          | UI Framework                     |
+| TypeScript     | Type-safe JavaScript             |
+| Vite           | Fast development server & build  |
+| Tailwind CSS   | Styling                          |
+| shadcn/ui      | UI component library             |
+| Framer Motion  | Animations                       |
+| Recharts       | Charts and visualizations        |
+| Supabase       | Backend database                 |
+
+---
+
+## 📁 Project Structure
+
+```
+agriwise-ai-main/
+├── src/
+│   ├── components/     → Reusable UI components
+│   ├── hooks/          → Custom React hooks (auth, speech, etc.)
+│   ├── lib/            → Core logic (AI engine, translations)
+│   ├── pages/          → App pages (Auth, Index, NotFound)
+│   └── integrations/   → Supabase client & types
+├── public/             → Static assets
+├── index.html          → Main HTML file
+├── package.json        → Dependencies & scripts
+├── vite.config.ts      → Vite configuration
+└── tailwind.config.ts  → Tailwind CSS configuration
+```
+
+---
+
+## ❓ Troubleshooting
+
+### "npm is not recognized"
+→ Node.js is not installed. Follow **Step 1** in Prerequisites above.
+
+### "npm install" shows errors
+→ Try deleting `node_modules` folder and `package-lock.json`, then run `npm install` again:
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Port 8080 is already in use
+→ Another application is using port 8080. Either close it or change the port in `vite.config.ts`.
+
+### Page shows a blank screen
+→ Open browser DevTools (press **F12**), go to the **Console** tab, and check for error messages.

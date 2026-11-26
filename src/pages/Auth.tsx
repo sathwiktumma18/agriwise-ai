@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Lock, User, Leaf } from 'lucide-react';
+import { signUpLocal, signInLocal } from '@/hooks/useAuth';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -23,30 +23,24 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        navigate('/');
+        const result = signInLocal(email, password);
+        if (!result.success) {
+          toast({ title: 'Sign in failed', description: result.error, variant: 'destructive' });
+          return;
+        }
+        toast({ title: 'Welcome back!', description: `Signed in as ${email}` });
       } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name: fullName },
-            emailRedirectTo: window.location.origin,
-          },
-        });
-        if (error) throw error;
-        toast({
-          title: 'Account created!',
-          description: 'Please check your email to verify your account.',
-        });
+        const result = signUpLocal(email, password, fullName);
+        if (!result.success) {
+          toast({ title: 'Sign up failed', description: result.error, variant: 'destructive' });
+          return;
+        }
+        toast({ title: 'Account created!', description: 'You are now signed in.' });
       }
+      // Force page reload to update auth state across the app
+      window.location.href = '/';
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -66,25 +60,22 @@ const Auth = () => {
             <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style={{ background: 'var(--gradient-primary)' }}>
               🌱
             </div>
-            <h1 className="text-2xl font-bold font-display text-primary-foreground">AgriVision AI</h1>
-            <p className="text-sm text-muted mt-1 opacity-80">Smart Farm Advisory System</p>
+            <h1 className="text-xl font-bold font-display text-primary-foreground text-center leading-tight">AGENTIC AI POWERED<br />FARM ADVISOR SYSTEM</h1>
           </div>
 
           {/* Toggle */}
           <div className="flex rounded-lg bg-muted/20 p-1 mb-6">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                isLogin ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-              }`}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${isLogin ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                }`}
             >
               Sign In
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                !isLogin ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-              }`}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${!isLogin ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                }`}
             >
               Sign Up
             </button>

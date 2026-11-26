@@ -1,53 +1,68 @@
-import { useState, useRef, useCallback } from 'react';
-import { Language } from '@/lib/translations';
-import { FarmInput, WeatherData, AnalysisResult, runAnalysis, generateWeatherData } from '@/lib/agentEngine';
-import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
-import { HeaderBar } from '@/components/HeaderBar';
-import { HeroSection } from '@/components/HeroSection';
-import { InputPanel } from '@/components/InputPanel';
-import { WeatherCard } from '@/components/WeatherCard';
-import { RecommendationDashboard } from '@/components/RecommendationDashboard';
-import { ChartsSection } from '@/components/ChartsSection';
-import { ReportGenerator } from '@/components/ReportGenerator';
-import { DocumentationModal } from '@/components/DocumentationModal';
-import { AgentAnimation } from '@/components/AgentAnimation';
+import { startTransition, useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
+import { analyzeFarm } from "@/lib/api";
+import type { AnalysisResult, FarmInput, VoiceParseResult, WeatherData } from "@/lib/agentEngine";
+import { Language } from "@/lib/translations";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { AgentAnimation } from "@/components/AgentAnimation";
+import { ChartsSection } from "@/components/ChartsSection";
+import { DocumentationModal } from "@/components/DocumentationModal";
+import { HeaderBar } from "@/components/HeaderBar";
+import { HeroSection } from "@/components/HeroSection";
+import { InputPanel } from "@/components/InputPanel";
+import { RecommendationDashboard } from "@/components/RecommendationDashboard";
+import { ReportGenerator } from "@/components/ReportGenerator";
+import { WeatherCard } from "@/components/WeatherCard";
 
-const langSpeechCodes: Record<Language, string> = { en: 'en-US', te: 'te-IN', hi: 'hi-IN' };
+const langSpeechCodes: Record<Language, string> = { en: "en-US", te: "te-IN", hi: "hi-IN" };
 
 const Index = () => {
-  const [lang, setLang] = useState<Language>('en');
+  const [lang, setLang] = useState<Language>("en");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [farmInput, setFarmInput] = useState<FarmInput | null>(null);
+  const [voiceParse, setVoiceParse] = useState<VoiceParseResult | null>(null);
   const [docsOpen, setDocsOpen] = useState(false);
-
   const inputRef = useRef<HTMLDivElement>(null);
+
   const { speak, stop, isSpeaking } = useSpeechSynthesis();
 
   const scrollToInput = () => {
-    inputRef.current?.scrollIntoView({ behavior: 'smooth' });
+    inputRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSubmit = useCallback((input: FarmInput) => {
-    setFarmInput(input);
-    setIsAnalyzing(true);
-    setResult(null);
+  const handleSubmit = useCallback(
+    async (input: FarmInput) => {
+      setIsAnalyzing(true);
+      setResult(null);
 
-    const weatherData = generateWeatherData();
-    setWeather(weatherData);
+      try {
+        const response = await analyzeFarm(input, lang);
+        startTransition(() => {
+          setFarmInput(response.input);
+          setWeather(response.weather);
+          setResult(response.result);
+          setVoiceParse(response.voiceParse);
+        });
+        toast.success(`Recommendation ready: ${response.result.bestCrop.crop.name}`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Analysis request failed.";
+        toast.error(message);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    },
+    [lang],
+  );
 
-    // Simulate agent analysis delay
-    setTimeout(() => {
-      const analysisResult = runAnalysis(input, weatherData);
-      setResult(analysisResult);
-      setIsAnalyzing(false);
-    }, 3000);
-  }, []);
-
-  const handleSpeak = useCallback((text: string) => {
-    speak(text, langSpeechCodes[lang]);
-  }, [speak, lang]);
+  const handleSpeak = useCallback(
+    (text: string, languageOverride?: Language) => {
+      const activeLanguage = languageOverride ?? lang;
+      speak(text, langSpeechCodes[activeLanguage]);
+    },
+    [lang, speak],
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,13 +70,15 @@ const Index = () => {
 
       <HeroSection lang={lang} onGetStarted={scrollToInput} onViewDocs={() => setDocsOpen(true)} />
 
-      <main className="container mx-auto px-4 md:px-6 py-12 space-y-12">
-        <div ref={inputRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="container mx-auto space-y-12 px-4 py-12 md:px-6">
+        <div ref={inputRef} className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <InputPanel lang={lang} onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />
           </div>
           <div>
-            {weather && <WeatherCard lang={lang} weather={weather} />}
+            {weather && (
+              <WeatherCard lang={lang} weather={weather} isReal={weather.isReal} city={weather.city} />
+            )}
           </div>
         </div>
 
@@ -74,13 +91,14 @@ const Index = () => {
               result={result}
               input={farmInput}
               weather={weather}
+              voiceParse={voiceParse}
               onSpeak={handleSpeak}
             />
 
             <ChartsSection lang={lang} result={result} weather={weather} />
 
             <div className="flex justify-center">
-              <ReportGenerator lang={lang} result={result} input={farmInput} weather={weather} />
+              <ReportGenerator lang={lang} result={result} input={farmInput} weather={weather} voiceParse={voiceParse} />
             </div>
           </>
         )}
@@ -89,8 +107,8 @@ const Index = () => {
       <DocumentationModal lang={lang} open={docsOpen} onOpenChange={setDocsOpen} />
 
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
-        <p className="font-display">AgriVision AI — Smart Farm Advisory & Decision Intelligence System</p>
-        <p className="mt-1">Powered by Multi-Agent AI Architecture • College Project</p>
+        <p className="font-display">AGENTIC AI POWERED FARM ADVISOR SYSTEM</p>
+        <p className="mt-1">Powered by multilingual voice understanding, ML ranking, and live weather intelligence.</p>
       </footer>
     </div>
   );
